@@ -31,3 +31,11 @@ Tester dekker diagnostiske sikkerhetsregler og grunnstruktur; de dokumenterer ik
 ## Visuell identitet
 
 Grensesnittet bruker et mørkt verksteduttrykk med oransje handlingsknapper, selvhostede DM Sans / Space Grotesk-skrifter og Lucide-ikoner. Mobil har fast bunnmeny med alle seks hovedområder; større skjermer har sidemeny. Alle skjermer er kontrollert for horisontal overflyt ved 320, 390, 768, 1024 og 1440 px. Tastaturfokus, snarvei til hovedinnhold, gjeldende navigasjon/steg og redusert bevegelse støttes. Eksisterende lokale lagringsnøkler beholdes ved redesign.
+
+## Modelloppslag
+
+Under Mine gitarer kan brukeren velge modell og produksjonsår, forhåndsvise standardspesifikasjoner og velge hvilke felt som skal brukes. Eksisterende egne felt er ikke valgt automatisk. Modell og år oppdateres først når brukeren anvender valget. Endringer i modell eller år etter et oppslag gjør referansen utdatert og vises tydelig. Lokale data fra tidligere versjoner beholdes.
+
+`src/models.mjs` er et versjonert, lokalt bibliotek, ikke et live nettsøk. Første dekning: Gibson Les Paul Standard 50s og 60s, modellår 2019–2026. Disse modellnavnene viser til serien, ikke produksjon på 1950-/1960-tallet. Opplysningene er antatte modellstandarder med produsentlenke. Produsentnettsiden var utilgjengelig for kildekontroll, og ingen verdier er merket som dokumentert årgangsspesifikasjon. Ikke bruk dem som verifisert fabrikkoppsett. Ingen automatisk utfylling av relief, strenghøyde eller pickuphøyde. Ukjente modeller/år gir ingen automatisk utfylling; manuell profil støttes.
+
+Nye modellposter må ha unik identitet, eksplisitt årsområde, kilde, verifikasjonsstatus og separate hals-/stolpickups. Fabrikkverifisert status krever faktisk kildekontroll for den aktuelle varianten og årgangen. Årsomfanget i dagens bibliotek er oppslagsavgrensning og garanterer ikke at spesifikasjonene var uendret gjennom alle årene.

@@ -24,6 +24,13 @@ import "@fontsource/space-grotesk/latin-400.css";
 import "@fontsource/space-grotesk/latin-500.css";
 import "@fontsource/space-grotesk/latin-600.css";
 import "./style.css";
+import {
+  ModelLookup,
+  ReferenceDetails,
+  type GuitarProfile,
+  type ModelReference,
+} from "./ModelLookup";
+import { specLabels } from "./models.mjs";
 function useSaved<T>(key: string, initial: T) {
   const [value, setValue] = useState<T>(() => {
     try {
@@ -63,7 +70,7 @@ function App() {
   const [step, setStep] = useSaved("fl-step", 0);
   const [notes, setNotes] = useSaved<Record<string, string>>("fl-notes", {});
   const [history, setHistory] = useSaved<string[]>("fl-history", []);
-  const [guitar, setGuitar] = useSaved("fl-guitar", {
+  const [guitar, setGuitar] = useSaved<GuitarProfile>("fl-guitar", {
     manufacturer: "Gibson",
     model: "Les Paul",
     variant: "Ukjent",
@@ -77,6 +84,10 @@ function App() {
     age: "Ukjent",
     tuning: "E standard",
   });
+  const [modelReference, setModelReference] = useSaved<ModelReference | null>(
+    "fl-model-reference",
+    null,
+  );
   const [profile, setProfile] = useSaved("fl-profile", "Balanced");
   const [custom, setCustom] = useSaved("fl-custom", "");
   const [symptom, setSymptom] = useSaved("fl-symptom", "Skurring");
@@ -295,7 +306,9 @@ function App() {
                     </div>
                     <div>
                       <span className="instrument-type">
-                        ELEKTRISK / DEMOPROFIL
+                        {modelReference
+                          ? "ELEKTRISK / MIN GITAR"
+                          : "ELEKTRISK / DEMOPROFIL"}
                       </span>
                       <h3>
                         {guitar.manufacturer}
@@ -377,12 +390,18 @@ function App() {
               <Title
                 label="DITT INSTRUMENT"
                 title="Mine gitarer"
-                text="Start med en Les Paul-profil. Rediger feltene etter gitaren du faktisk har."
+                text="Finn modell og produksjonsår, hent standardspesifikasjoner og tilpass profilen til gitaren du faktisk har."
               />
-              <div className="warning">
-                Modellstandard er antatt, ikke dokumentert fabrikkspesifikasjon.
-                Årganger og modifikasjoner varierer. Demodata er ikke råd.
-              </div>
+              <ModelLookup
+                guitar={guitar}
+                onApply={(next, reference) => {
+                  setGuitar(next);
+                  setModelReference(reference);
+                  setNotice(
+                    "Modellstandarder lagt inn. Se kilde og status under instrumentdetaljene.",
+                  );
+                }}
+              />
               <section className="profile-banner">
                 <GuitarIcon size={30} />
                 <div>
@@ -391,7 +410,9 @@ function App() {
                     {guitar.manufacturer} {guitar.model}
                   </h2>
                 </div>
-                <span className="badge">Demoprofil</span>
+                <span className="badge">
+                  {modelReference ? "Egen gitarprofil" : "Demoprofil"}
+                </span>
               </section>
               <section className="card">
                 <div className="panel-heading">
@@ -400,11 +421,25 @@ function App() {
                   <span>Lagres automatisk</span>
                 </div>
                 <div className="form-grid">
-                  {Object.entries(guitar).map(([key, value]) => (
+                  {Object.entries({
+                    manufacturer: guitar.manufacturer,
+                    model: guitar.model,
+                    year: guitar.year,
+                    ...guitar,
+                    neckPickup: guitar.neckPickup ?? "Ukjent",
+                    bridgePickup: guitar.bridgePickup ?? "Ukjent",
+                    nutWidth: guitar.nutWidth ?? "Ukjent",
+                    fretCount: guitar.fretCount ?? "Ukjent",
+                    fretSize: guitar.fretSize ?? "Ukjent",
+                    fingerboard: guitar.fingerboard ?? "Ukjent",
+                    body: guitar.body ?? "Ukjent",
+                    neckProfile: guitar.neckProfile ?? "Ukjent",
+                  }).map(([key, value]) => (
                     <label key={key}>
                       {
                         (
                           {
+                            ...specLabels,
                             manufacturer: "Produsent",
                             model: "Modell",
                             variant: "Variant",
@@ -430,10 +465,12 @@ function App() {
                   ))}
                 </div>
                 <p className="muted">
-                  Kilde: brukerredigert demoprofil · sikkerhetsgrad:
-                  uverifisert. Målinger lagres separat i oppsettsflyten.
+                  Egne verdier er ikke fabrikkverifisert. Hentede
+                  modellstandarder har kilde og status nedenfor. Målinger lagres
+                  separat i oppsettsflyten.
                 </p>
               </section>
+              <ReferenceDetails reference={modelReference} guitar={guitar} />
               <h2>Historikk</h2>
               {history.length ? (
                 history.map((h, i) => (

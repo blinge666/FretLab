@@ -2155,3 +2155,144 @@ body:has(.session-strip) footer {
     left: 12px;
   }
 }
+.lookup-fields {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto;
+  gap: 18px;
+  align-items: end;
+}
+.lookup-fields label {
+  margin-bottom: 0;
+}
+.lookup-fields .primary {
+  margin-bottom: 0;
+  white-space: nowrap;
+  gap: 10px;
+}
+.model-lookup > p {
+  max-width: 760px;
+}
+.model-lookup > .muted {
+  margin-top: 22px;
+}
+.lookup-result {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.lookup-result > p:first-child {
+  color: #d9c5ac;
+}
+.reference-heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.reference-heading h3 {
+  font-size: 20px;
+}
+.reference-status {
+  font-size: 10px;
+  color: #e6bb86;
+  border: 1px solid #75613e;
+  background: #382f1e;
+  padding: 5px 9px;
+  border-radius: 4px;
+}
+.selection-help {
+  font-size: 11px !important;
+}
+.spec-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 22px 0;
+}
+.spec-option {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 14px;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  cursor: pointer;
+}
+.spec-option:has(input:checked) {
+  border-color: #846444;
+  background: #eb9b6509;
+}
+.spec-option input {
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+  margin-top: 3px;
+  flex-shrink: 0;
+  accent-color: var(--accent);
+}
+.spec-option strong {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: #c5ccb9;
+}
+.spec-option span span {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  margin-top: 5px;
+}
+.spec-option small {
+  display: block;
+  font-size: 10px;
+  color: #98a28b;
+  margin-top: 5px;
+}
+.source-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #e6b28d;
+  line-height: 1.8;
+  margin: 18px 0;
+  text-underline-offset: 4px;
+}
+.reference-details dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.reference-details dt {
+  font-size: 11px;
+}
+.reference-details dd {
+  font-size: 11px;
+}
+@media (max-width: 1000px) {
+  .lookup-fields {
+    grid-template-columns: 2fr 1fr;
+  }
+  .lookup-fields .primary {
+    grid-column: 1/-1;
+    justify-self: start;
+  }
+}
+@media (max-width: 600px) {
+  .lookup-fields {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .lookup-fields .primary {
+    width: 100%;
+    margin-top: 8px;
+  }
+  .spec-options,
+  .reference-details dl {
+    grid-template-columns: 1fr;
+  }
+  .reference-heading h3 {
+    font-size: 18px;
+  }
+}

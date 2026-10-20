@@ -27,3 +27,7 @@ Hjem, Mine gitarer, Guidet oppsett, Diagnose, Verktøykasse og Tuner finnes. Nyb
 4. Egen tunermodul med testbare centberegninger og verifikasjon på faktiske enheter; deretter lydreferanser, opptak og eventuell Expo/native-klient.
 
 Tester dekker diagnostiske sikkerhetsregler og grunnstruktur; de dokumenterer ikke gitarfaglig korrekthet eller akustisk presisjon.
+
+## Visuell identitet
+
+Grensesnittet bruker et mørkt verksteduttrykk med oransje handlingsknapper, selvhostede DM Sans / Space Grotesk-skrifter og Lucide-ikoner. Mobil har fast bunnmeny med alle seks hovedområder; større skjermer har sidemeny. Alle skjermer er kontrollert for horisontal overflyt ved 320, 390, 768, 1024 og 1440 px. Tastaturfokus, snarvei til hovedinnhold, gjeldende navigasjon/steg og redusert bevegelse støttes. Eksisterende lokale lagringsnøkler beholdes ved redesign.

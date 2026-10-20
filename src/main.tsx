@@ -247,9 +247,7 @@ function App() {
                       <small>Observer. Mål. Dokumenter.</small>
                     </div>
                   </div>
-                  <span className="art-caption">
-                    ILLUSTRASJON / IKKE I MÅLESTOKK
-                  </span>
+                  <span className="art-caption">REFERANSEBILDE / GOLDTOP</span>
                 </div>
                 <span className="hero-number">01 — 07</span>
               </section>
@@ -802,66 +800,14 @@ function Title({
 }
 function Guitar() {
   return (
-    <svg
+    <img
       className="guitar"
-      viewBox="0 0 260 380"
-      role="img"
-      aria-label="Stilisert elektrisk gitar"
-    >
-      <g transform="rotate(22 130 190)">
-        <path
-          d="M113 180 C75 159 59 186 70 216 C24 222 35 303 83 319 C133 345 190 305 179 258 C175 231 147 236 151 209 C164 181 142 166 135 184Z"
-          fill="#cb925b"
-          stroke="#e9b77c"
-          strokeWidth="3"
-        />
-        <path
-          d="M113 180 C75 159 59 186 70 216 C24 222 35 303 83 319 C133 345 190 305 179 258 C175 231 147 236 151 209 C164 181 142 166 135 184Z"
-          fill="none"
-          stroke="#7a4d34"
-          strokeWidth="9"
-          opacity=".35"
-        />
-        <path
-          d="M115 212 L119 48 L137 48 L135 218Z"
-          fill="#302925"
-          stroke="#e5cba3"
-          strokeWidth="2"
-        />
-        <path
-          d="M119 48 L111 13 L142 9 L138 49Z"
-          fill="#342b26"
-          stroke="#ddbb8e"
-          strokeWidth="2"
-        />
-        {Array.from({ length: 17 }, (_, i) => (
-          <path
-            key={i}
-            d={`M119 ${60 + i * 8} h16`}
-            stroke="#c7b08f"
-            strokeWidth="1"
-          />
-        ))}
-        <path
-          d="M106 228 h35 v14 h-35Z M104 259 h35 v14 h-35Z"
-          fill="#e4d8be"
-          stroke="#675a49"
-          strokeWidth="3"
-        />
-        <path d="M106 288 h33" stroke="#ded6bf" strokeWidth="7" />
-        {[0, 1, 2, 3, 4, 5].map((i) => (
-          <path
-            key={i}
-            d={`M${122 + i * 2} 20 L${113 + i * 3} 300`}
-            stroke="#e7dfc5"
-            strokeWidth=".65"
-          />
-        ))}
-        <circle cx="158" cy="279" r="7" fill="#c7974c" />
-        <circle cx="152" cy="300" r="7" fill="#c7974c" />
-        <circle cx="176" cy="287" r="7" fill="#c7974c" />
-      </g>
-    </svg>
+      src="/images/goldtop-guitar.webp"
+      alt="Gullfarget elektrisk gitar med kremfarget slagbrett og to humbuckere"
+      width={1600}
+      height={562}
+      decoding="async"
+    />
   );
 }
 createRoot(document.getElementById("root")!).render(

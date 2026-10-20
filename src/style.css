@@ -2077,3 +2077,81 @@ body:has(.session-strip) footer {
   align-items: center;
   gap: 10px;
 }
+/* Photographic instrument cutouts share one asset in both contexts. */
+.hero-art .guitar {
+  width: 520px;
+  height: 350px;
+  max-width: none;
+  object-fit: contain;
+  left: 50%;
+  top: 48%;
+  transform: translate(-50%, -50%) rotate(-58deg);
+  filter: drop-shadow(-18px 24px 16px #0008);
+}
+.instrument-art .guitar {
+  width: 195px;
+  height: 130px;
+  max-width: none;
+  object-fit: contain;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-80deg);
+  filter: drop-shadow(-6px 6px 6px #0005);
+}
+@media (min-width: 1600px) {
+  .hero-art .guitar {
+    width: 580px;
+    height: 390px;
+  }
+}
+@media (min-width: 601px) and (max-width: 1000px) {
+  .hero-art .guitar {
+    width: 430px;
+    height: 290px;
+    transform: translate(-50%, -50%) rotate(-70deg);
+  }
+  .instrument-art .guitar {
+    width: 170px;
+    height: 115px;
+  }
+}
+@media (max-width: 600px) {
+  .hero-art {
+    min-height: 255px;
+  }
+  .hero-art .guitar {
+    width: 335px;
+    height: 225px;
+    left: 51%;
+    top: 46%;
+    transform: translate(-50%, -50%) rotate(-27deg);
+  }
+  .instrument-art .guitar {
+    width: 205px;
+    height: 138px;
+    transform: translate(-50%, -50%) rotate(-77deg);
+  }
+}
+@media (min-width: 1001px) and (max-width: 1599px) {
+  .hero-art .guitar {
+    width: 410px;
+    height: 275px;
+    top: 52%;
+    transform: translate(-50%, -50%) rotate(-52deg);
+  }
+}
+@media (min-width: 1600px) {
+  .hero-art .guitar {
+    width: 450px;
+    height: 300px;
+    top: 52%;
+    transform: translate(-50%, -50%) rotate(-52deg);
+  }
+}
+@media (min-width: 601px) {
+  .art-callout {
+    top: 65px;
+    bottom: auto;
+    left: 12px;
+  }
+}

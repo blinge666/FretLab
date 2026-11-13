@@ -1,5 +1,5 @@
 // Curated reference data. A model match never verifies an individual instrument.
-export const catalogVersion = "2026-11-13.3";
+export const catalogVersion = "2026-11-13.4";
 const unverifiedNote =
   "Produsentens nettside kunne ikke kontrolleres under registrering. Verdiene er antatte modellstandarder og ikke dokumenterte fabrikkdata for valgt årgang.";
 const gibsonSource = {
@@ -153,10 +153,118 @@ const fenderModels = (shape) =>
       series.range,
     ),
   );
+const ibanezSource = {
+  title: "Ibanez – elektriske gitarer",
+  url: "https://www.ibanez.com/",
+  verifiedAt: null,
+  note: unverifiedNote,
+};
+// Ibanez model numbers do not name their family, so it is passed explicitly.
+const ibanez = (family, model, specs, range = {}) =>
+  entry(
+    "Ibanez",
+    model,
+    ibanezSource,
+    { scale: "25,5 tommer (648 mm)", ...specs },
+    { family, ...range },
+  );
+const ibanezModels = () => [
+  ibanez(
+    "RG",
+    "RG550 (Genesis Collection)",
+    {
+      radius: "430 mm (ca. 16,9 tommer)",
+      nut: "Låsesadel",
+      nutWidth: "43 mm (ca. 1,69 tommer)",
+      bridge: "Edge-tremolo (dobbeltlåsende)",
+      fretCount: "24",
+      fretSize: "Jumbo",
+      fingerboard: "Lønn",
+      body: "Lind (basswood)",
+      neckProfile: "Super Wizard",
+      neckPickup: "V7 (humbucker)",
+      middlePickup: "S1 (single coil)",
+      bridgePickup: "V8 (humbucker)",
+    },
+    { introduced: 2018 },
+  ),
+  // Body and fingerboard woods changed between production years and are left out.
+  ibanez("RG", "RG421", {
+    radius: "400 mm (ca. 15,7 tommer)",
+    nutWidth: "43 mm (ca. 1,69 tommer)",
+    bridge: "Fast stol (hardtail)",
+    fretCount: "24",
+    fretSize: "Jumbo",
+    neckProfile: "Wizard III",
+    neckPickup: "Quantum (humbucker)",
+    bridgePickup: "Quantum (humbucker)",
+  }),
+  ibanez("S", "S521", {
+    radius: "400 mm (ca. 15,7 tommer)",
+    nutWidth: "43 mm (ca. 1,69 tommer)",
+    bridge: "Fast stol (hardtail)",
+    fretCount: "24",
+    fretSize: "Jumbo",
+    neckProfile: "Wizard III",
+    neckPickup: "Quantum (humbucker)",
+    bridgePickup: "Quantum (humbucker)",
+  }),
+  ibanez(
+    "AZ",
+    "AZ2204 (Prestige)",
+    {
+      radius: "305 mm (12 tommer)",
+      nut: "Bein",
+      nutWidth: "42 mm (ca. 1,65 tommer)",
+      bridge: "Gotoh T1802 tremolo",
+      fretCount: "22",
+      fretSize: "Jumbo (rustfritt stål)",
+      body: "Or (alder)",
+      neckProfile: "AZ Oval C",
+      neckPickup: "Seymour Duncan Hyperion (single coil)",
+      middlePickup: "Seymour Duncan Hyperion (single coil)",
+      bridgePickup: "Seymour Duncan Hyperion (humbucker)",
+    },
+    { introduced: 2018 },
+  ),
+  // Fret count is left out because it could not be confirmed.
+  ibanez(
+    "AZ",
+    "AZ2402 (Prestige)",
+    {
+      radius: "305 mm (12 tommer)",
+      nut: "Bein",
+      nutWidth: "42 mm (ca. 1,65 tommer)",
+      bridge: "Gotoh T1802 tremolo",
+      fretSize: "Jumbo (rustfritt stål)",
+      body: "Or (alder)",
+      neckProfile: "AZ Oval C",
+      neckPickup: "Seymour Duncan Hyperion (humbucker)",
+      bridgePickup: "Seymour Duncan Hyperion (humbucker)",
+    },
+    { introduced: 2018 },
+  ),
+  ibanez(
+    "AZ",
+    "AZES40",
+    {
+      scale: "25 tommer (635 mm)",
+      radius: "250 mm (ca. 9,8 tommer)",
+      bridge: "T106 tremolo",
+      fretCount: "22",
+      fingerboard: "Jatoba",
+      body: "Poppel",
+      neckPickup: "Essentials (single coil)",
+      middlePickup: "Essentials (single coil)",
+      bridgePickup: "Essentials (humbucker)",
+    },
+    { introduced: 2021 },
+  ),
+];
 /** Fields left out of a record are unknown or too uncertain to suggest. */
 const families = ["Les Paul", "SG", "Stratocaster", "Telecaster"];
 const entry = (manufacturer, model, source, specs, range = {}) => ({
-  family: families.find((f) => model.includes(f)),
+  family: range.family ?? families.find((f) => model.includes(f)),
   id: `${manufacturer} ${model}`
     .toLowerCase()
     .replace(/[^a-z0-9 ]/g, "")
@@ -311,6 +419,7 @@ export const modelCatalog = [
   ),
   ...fenderModels("Stratocaster"),
   ...fenderModels("Telecaster"),
+  ...ibanezModels(),
 ];
 /** Picker steps: manufacturer, then model family, then exact model. Catalogue order is kept. */
 export const catalogManufacturers = () => [

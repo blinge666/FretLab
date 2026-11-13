@@ -88,7 +88,12 @@ test("same model name from different manufacturers stays distinct and year-limit
 test("picker steps narrow from manufacturer to family to model without losing entries", async () => {
   const { catalogManufacturers, catalogFamilies, catalogModels } =
     await import("../src/models.mjs");
-  assert.deepEqual(catalogManufacturers(), ["Gibson", "Epiphone", "Fender"]);
+  assert.deepEqual(catalogManufacturers(), [
+    "Gibson",
+    "Epiphone",
+    "Fender",
+    "Ibanez",
+  ]);
   assert.deepEqual(catalogFamilies("Gibson"), ["Les Paul", "SG"]);
   assert.deepEqual(catalogFamilies("Fender"), ["Stratocaster", "Telecaster"]);
   assert.deepEqual(catalogFamilies("Ukjent"), []);
@@ -122,4 +127,20 @@ test("every entry belongs to a family and Fender shapes differ only where they s
     "not-found",
   );
   assert.equal(findModel("gibson-sg-standard-61", 2021).kind, "match");
+});
+test("Ibanez families come from the record, not from letters in the model name", async () => {
+  const { catalogFamilies, catalogModels } = await import("../src/models.mjs");
+  assert.deepEqual(catalogFamilies("Ibanez"), ["RG", "S", "AZ"]);
+  assert.deepEqual(
+    catalogModels("Ibanez", "S").map((m) => m.id),
+    ["ibanez-s521"],
+  );
+  assert.equal(findModel("ibanez-azes40", 2020).kind, "not-found");
+  const azes = findModel("ibanez-azes40", 2022).model;
+  assert.notEqual(
+    azes.specs.scale,
+    findModel("ibanez-rg421", 2022).model.specs.scale,
+  );
+  for (const m of modelCatalog.filter((x) => x.manufacturer !== "Ibanez"))
+    assert.notEqual(m.family, "S");
 });

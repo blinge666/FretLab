@@ -1,5 +1,5 @@
 // Curated reference data. A model match never verifies an individual instrument.
-export const catalogVersion = "2026-11-13.3";
+export const catalogVersion = "2026-11-13.6";
 const unverifiedNote =
   "Produsentens nettside kunne ikke kontrolleres under registrering. Verdiene er antatte modellstandarder og ikke dokumenterte fabrikkdata for valgt årgang.";
 const gibsonSource = {
@@ -153,10 +153,230 @@ const fenderModels = (shape) =>
       series.range,
     ),
   );
+const ibanezSource = {
+  title: "Ibanez – elektriske gitarer",
+  url: "https://www.ibanez.com/",
+  verifiedAt: null,
+  note: unverifiedNote,
+};
+// Ibanez model numbers do not name their family, so it is passed explicitly.
+const ibanez = (family, model, specs, range = {}) =>
+  entry(
+    "Ibanez",
+    model,
+    ibanezSource,
+    { scale: "25,5 tommer (648 mm)", ...specs },
+    { family, ...range },
+  );
+const ibanezModels = () => [
+  ibanez(
+    "RG",
+    "RG550 (Genesis Collection)",
+    {
+      radius: "430 mm (ca. 16,9 tommer)",
+      nut: "Låsesadel",
+      nutWidth: "43 mm (ca. 1,69 tommer)",
+      bridge: "Edge-tremolo (dobbeltlåsende)",
+      fretCount: "24",
+      fretSize: "Jumbo",
+      fingerboard: "Lønn",
+      body: "Lind (basswood)",
+      neckProfile: "Super Wizard",
+      neckPickup: "V7 (humbucker)",
+      middlePickup: "S1 (single coil)",
+      bridgePickup: "V8 (humbucker)",
+    },
+    { introduced: 2018 },
+  ),
+  // Body and fingerboard woods changed between production years and are left out.
+  ibanez("RG", "RG421", {
+    radius: "400 mm (ca. 15,7 tommer)",
+    nutWidth: "43 mm (ca. 1,69 tommer)",
+    bridge: "Fast stol (hardtail)",
+    fretCount: "24",
+    fretSize: "Jumbo",
+    neckProfile: "Wizard III",
+    neckPickup: "Quantum (humbucker)",
+    bridgePickup: "Quantum (humbucker)",
+  }),
+  ibanez("S", "S521", {
+    radius: "400 mm (ca. 15,7 tommer)",
+    nutWidth: "43 mm (ca. 1,69 tommer)",
+    bridge: "Fast stol (hardtail)",
+    fretCount: "24",
+    fretSize: "Jumbo",
+    neckProfile: "Wizard III",
+    neckPickup: "Quantum (humbucker)",
+    bridgePickup: "Quantum (humbucker)",
+  }),
+  ibanez(
+    "AZ",
+    "AZ2204 (Prestige)",
+    {
+      radius: "305 mm (12 tommer)",
+      nut: "Bein",
+      nutWidth: "42 mm (ca. 1,65 tommer)",
+      bridge: "Gotoh T1802 tremolo",
+      fretCount: "22",
+      fretSize: "Jumbo (rustfritt stål)",
+      body: "Or (alder)",
+      neckProfile: "AZ Oval C",
+      neckPickup: "Seymour Duncan Hyperion (single coil)",
+      middlePickup: "Seymour Duncan Hyperion (single coil)",
+      bridgePickup: "Seymour Duncan Hyperion (humbucker)",
+    },
+    { introduced: 2018 },
+  ),
+  // Fret count is left out because it could not be confirmed.
+  ibanez(
+    "AZ",
+    "AZ2402 (Prestige)",
+    {
+      radius: "305 mm (12 tommer)",
+      nut: "Bein",
+      nutWidth: "42 mm (ca. 1,65 tommer)",
+      bridge: "Gotoh T1802 tremolo",
+      fretSize: "Jumbo (rustfritt stål)",
+      body: "Or (alder)",
+      neckProfile: "AZ Oval C",
+      neckPickup: "Seymour Duncan Hyperion (humbucker)",
+      bridgePickup: "Seymour Duncan Hyperion (humbucker)",
+    },
+    { introduced: 2018 },
+  ),
+  ibanez(
+    "AZ",
+    "AZES40",
+    {
+      scale: "25 tommer (635 mm)",
+      radius: "250 mm (ca. 9,8 tommer)",
+      bridge: "T106 tremolo",
+      fretCount: "22",
+      fingerboard: "Jatoba",
+      body: "Poppel",
+      neckPickup: "Essentials (single coil)",
+      middlePickup: "Essentials (single coil)",
+      bridgePickup: "Essentials (humbucker)",
+    },
+    { introduced: 2021 },
+  ),
+];
+const glSource = {
+  title: "G&L – elektriske gitarer",
+  url: "https://www.glguitars.com/",
+  verifiedAt: null,
+  note: unverifiedNote,
+};
+const glUsa = {
+  scale: "25,5 tommer (648 mm)",
+  radius: "9,5 tommer (241 mm)",
+  nut: "Bein",
+  nutWidth: "1,625 tommer (41,3 mm)",
+  fretCount: "22",
+  fretSize: "Medium jumbo",
+  body: "Or (alder) eller sumpask (avhengig av utførelse)",
+  neckProfile: "Modern Classic",
+};
+// Tribute necks, nuts and body woods vary too much between runs to suggest.
+const glTribute = { scale: "25,5 tommer (648 mm)", fretCount: "22" };
+const glShapes = [
+  {
+    family: "ASAT",
+    name: "ASAT Classic",
+    tribute: true,
+    specs: {
+      bridge: "Tradisjonell boksstol med 6 messingsaler",
+      ...tele("G&L MFD (single coil)"),
+    },
+  },
+  {
+    family: "ASAT",
+    name: "ASAT Special",
+    tribute: true,
+    specs: {
+      bridge: "Saddle-Lock fast stol",
+      ...tele("G&L MFD Jumbo (single coil)"),
+    },
+  },
+  {
+    family: "Legacy",
+    name: "Legacy",
+    tribute: true,
+    specs: {
+      bridge: "Dual-Fulcrum vibrato",
+      ...strat("Alnico V (single coil)"),
+    },
+  },
+  {
+    family: "S-500",
+    name: "S-500",
+    specs: {
+      bridge: "Dual-Fulcrum vibrato",
+      ...strat("G&L MFD (single coil)"),
+    },
+  },
+  {
+    family: "Comanche",
+    name: "Comanche",
+    specs: {
+      bridge: "Dual-Fulcrum vibrato",
+      ...strat("G&L MFD Z-coil (delt, støyreduserende)"),
+    },
+  },
+  {
+    family: "Doheny",
+    name: "Doheny",
+    specs: {
+      bridge: "Dual-Fulcrum vibrato",
+      ...tele("G&L MFD bred spole (single coil)"),
+    },
+  },
+];
+// Coverage ends in 2025, when G&L stopped production.
+const glModels = () => [
+  ...glShapes.map((shape) =>
+    entry(
+      "G&L",
+      `Fullerton Deluxe ${shape.name}`,
+      glSource,
+      { ...glUsa, ...shape.specs },
+      { family: shape.family, introduced: 2018, lastCatalogYear: 2025 },
+    ),
+  ),
+  // 1990s USA Legacy. Necks were ordered in several shapes; the standard one is given.
+  entry(
+    "G&L",
+    "Legacy (USA, 1990-tallet)",
+    glSource,
+    {
+      scale: "25,5 tommer (648 mm)",
+      radius:
+        "7,5 tommer (190,5 mm) som standard; andre ble levert på bestilling",
+      nutWidth: "1,625 tommer (41,3 mm) som standard",
+      bridge: "Dual-Fulcrum vibrato",
+      fretCount: "22",
+      fingerboard: "Lønn eller palisander (avhengig av variant)",
+      body: "Or (alder) eller sumpask (avhengig av utførelse)",
+      ...strat("Alnico V (single coil)"),
+    },
+    { family: "Legacy", introduced: 1992, lastCatalogYear: 1999 },
+  ),
+  ...glShapes
+    .filter((shape) => shape.tribute)
+    .map((shape) =>
+      entry(
+        "G&L",
+        `Tribute ${shape.name}`,
+        glSource,
+        { ...glTribute, ...shape.specs },
+        { family: shape.family, lastCatalogYear: 2025 },
+      ),
+    ),
+];
 /** Fields left out of a record are unknown or too uncertain to suggest. */
 const families = ["Les Paul", "SG", "Stratocaster", "Telecaster"];
 const entry = (manufacturer, model, source, specs, range = {}) => ({
-  family: families.find((f) => model.includes(f)),
+  family: range.family ?? families.find((f) => model.includes(f)),
   id: `${manufacturer} ${model}`
     .toLowerCase()
     .replace(/[^a-z0-9 ]/g, "")
@@ -311,6 +531,8 @@ export const modelCatalog = [
   ),
   ...fenderModels("Stratocaster"),
   ...fenderModels("Telecaster"),
+  ...ibanezModels(),
+  ...glModels(),
 ];
 /** Picker steps: manufacturer, then model family, then exact model. Catalogue order is kept. */
 export const catalogManufacturers = () => [

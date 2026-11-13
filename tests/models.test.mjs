@@ -88,7 +88,13 @@ test("same model name from different manufacturers stays distinct and year-limit
 test("picker steps narrow from manufacturer to family to model without losing entries", async () => {
   const { catalogManufacturers, catalogFamilies, catalogModels } =
     await import("../src/models.mjs");
-  assert.deepEqual(catalogManufacturers(), ["Gibson", "Epiphone", "Fender"]);
+  assert.deepEqual(catalogManufacturers(), [
+    "Gibson",
+    "Epiphone",
+    "Fender",
+    "Ibanez",
+    "G&L",
+  ]);
   assert.deepEqual(catalogFamilies("Gibson"), ["Les Paul", "SG"]);
   assert.deepEqual(catalogFamilies("Fender"), ["Stratocaster", "Telecaster"]);
   assert.deepEqual(catalogFamilies("Ukjent"), []);
@@ -122,4 +128,60 @@ test("every entry belongs to a family and Fender shapes differ only where they s
     "not-found",
   );
   assert.equal(findModel("gibson-sg-standard-61", 2021).kind, "match");
+});
+test("Ibanez families come from the record, not from letters in the model name", async () => {
+  const { catalogFamilies, catalogModels } = await import("../src/models.mjs");
+  assert.deepEqual(catalogFamilies("Ibanez"), ["RG", "S", "AZ"]);
+  assert.deepEqual(
+    catalogModels("Ibanez", "S").map((m) => m.id),
+    ["ibanez-s521"],
+  );
+  assert.equal(findModel("ibanez-azes40", 2020).kind, "not-found");
+  const azes = findModel("ibanez-azes40", 2022).model;
+  assert.notEqual(
+    azes.specs.scale,
+    findModel("ibanez-rg421", 2022).model.specs.scale,
+  );
+  for (const m of modelCatalog.filter((x) => x.manufacturer !== "Ibanez"))
+    assert.notEqual(m.family, "S");
+});
+test("G&L ids are clean, families are explicit and Tribute records stay sparse", async () => {
+  const { catalogFamilies, catalogModels } = await import("../src/models.mjs");
+  assert.deepEqual(catalogFamilies("G&L"), [
+    "ASAT",
+    "Legacy",
+    "S-500",
+    "Comanche",
+    "Doheny",
+  ]);
+  assert.deepEqual(
+    catalogModels("G&L", "ASAT").map((m) => m.id),
+    [
+      "gl-fullerton-deluxe-asat-classic",
+      "gl-fullerton-deluxe-asat-special",
+      "gl-tribute-asat-classic",
+      "gl-tribute-asat-special",
+    ],
+  );
+  const usa = findModel("gl-fullerton-deluxe-legacy", 2022).model;
+  const tribute = findModel("gl-tribute-legacy", 2022).model;
+  assert.ok(usa.specs.neckProfile);
+  for (const key of ["neckProfile", "nut", "nutWidth", "radius", "body"])
+    assert.equal(Object.hasOwn(tribute.specs, key), false);
+  assert.equal(findModel("gl-tribute-legacy", 2026).kind, "not-found");
+});
+test("a 1990s USA Legacy is found by year and kept apart from later series", async () => {
+  const { catalogModels } = await import("../src/models.mjs");
+  const id = "gl-legacy-usa-1990tallet";
+  assert.ok(catalogModels("G&L", "Legacy").some((m) => m.id === id));
+  assert.equal(findModel(id, 1995).kind, "match");
+  assert.equal(findModel(id, 1991).kind, "not-found");
+  assert.equal(findModel(id, 2000).kind, "not-found");
+  assert.equal(findModel("gl-fullerton-deluxe-legacy", 1995).kind, "not-found");
+  const specs = findModel(id, 1995).model.specs;
+  assert.ok(specs.middlePickup);
+  assert.notEqual(
+    specs.radius,
+    findModel("gl-fullerton-deluxe-legacy", 2020).model.specs.radius,
+  );
 });

@@ -1,5 +1,5 @@
 // Curated reference data. A model match never verifies an individual instrument.
-export const catalogVersion = "2026-11-13.5";
+export const catalogVersion = "2026-11-13.6";
 const unverifiedNote =
   "Produsentens nettside kunne ikke kontrolleres under registrering. Verdiene er antatte modellstandarder og ikke dokumenterte fabrikkdata for valgt årgang.";
 const gibsonSource = {
@@ -332,7 +332,7 @@ const glShapes = [
     },
   },
 ];
-// Coverage ends in 2025; the status of G&L production after that is unclear.
+// Coverage ends in 2025, when G&L stopped production.
 const glModels = () => [
   ...glShapes.map((shape) =>
     entry(
@@ -342,6 +342,24 @@ const glModels = () => [
       { ...glUsa, ...shape.specs },
       { family: shape.family, introduced: 2018, lastCatalogYear: 2025 },
     ),
+  ),
+  // 1990s USA Legacy. Necks were ordered in several shapes; the standard one is given.
+  entry(
+    "G&L",
+    "Legacy (USA, 1990-tallet)",
+    glSource,
+    {
+      scale: "25,5 tommer (648 mm)",
+      radius:
+        "7,5 tommer (190,5 mm) som standard; andre ble levert på bestilling",
+      nutWidth: "1,625 tommer (41,3 mm) som standard",
+      bridge: "Dual-Fulcrum vibrato",
+      fretCount: "22",
+      fingerboard: "Lønn eller palisander (avhengig av variant)",
+      body: "Or (alder) eller sumpask (avhengig av utførelse)",
+      ...strat("Alnico V (single coil)"),
+    },
+    { family: "Legacy", introduced: 1992, lastCatalogYear: 1999 },
   ),
   ...glShapes
     .filter((shape) => shape.tribute)

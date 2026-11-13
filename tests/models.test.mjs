@@ -170,3 +170,18 @@ test("G&L ids are clean, families are explicit and Tribute records stay sparse",
     assert.equal(Object.hasOwn(tribute.specs, key), false);
   assert.equal(findModel("gl-tribute-legacy", 2026).kind, "not-found");
 });
+test("a 1990s USA Legacy is found by year and kept apart from later series", async () => {
+  const { catalogModels } = await import("../src/models.mjs");
+  const id = "gl-legacy-usa-1990tallet";
+  assert.ok(catalogModels("G&L", "Legacy").some((m) => m.id === id));
+  assert.equal(findModel(id, 1995).kind, "match");
+  assert.equal(findModel(id, 1991).kind, "not-found");
+  assert.equal(findModel(id, 2000).kind, "not-found");
+  assert.equal(findModel("gl-fullerton-deluxe-legacy", 1995).kind, "not-found");
+  const specs = findModel(id, 1995).model.specs;
+  assert.ok(specs.middlePickup);
+  assert.notEqual(
+    specs.radius,
+    findModel("gl-fullerton-deluxe-legacy", 2020).model.specs.radius,
+  );
+});

@@ -22,7 +22,10 @@ export function ModelLookup({
   onApply: (guitar: GuitarProfile, reference: ModelReference) => void;
 }) {
   const [modelId, setModelId] = useState(
-    modelCatalog.find((m) => m.model === guitar.model)?.id || "",
+    modelCatalog.find(
+      (m) =>
+        m.model === guitar.model && m.manufacturer === guitar.manufacturer,
+    )?.id || "",
   );
   const [year, setYear] = useState(
     /^\d{4}$/.test(guitar.year) ? guitar.year : "",
@@ -78,11 +81,19 @@ export function ModelLookup({
               required
             >
               <option value="">Velg modell</option>
-              {modelCatalog.map((m) => (
-                <option value={m.id} key={m.id}>
-                  {m.manufacturer} {m.model}
-                </option>
-              ))}
+              {[...new Set(modelCatalog.map((m) => m.manufacturer))].map(
+                (maker) => (
+                  <optgroup label={maker} key={maker}>
+                    {modelCatalog
+                      .filter((m) => m.manufacturer === maker)
+                      .map((m) => (
+                        <option value={m.id} key={m.id}>
+                          {m.manufacturer} {m.model}
+                        </option>
+                      ))}
+                  </optgroup>
+                ),
+              )}
               <option value="other">Annen modell / ikke oppført</option>
             </select>
           </label>

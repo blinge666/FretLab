@@ -2,6 +2,9 @@ import { useState } from "react";
 import { ArrowDownToLine, BookOpen, ExternalLink, Search } from "lucide-react";
 import {
   modelCatalog,
+  catalogManufacturers,
+  catalogFamilies,
+  catalogModels,
   findModel,
   applyModelSpecs,
   specLabels,
@@ -21,12 +24,23 @@ export function ModelLookup({
   guitar: GuitarProfile;
   onApply: (guitar: GuitarProfile, reference: ModelReference) => void;
 }) {
-  const [modelId, setModelId] = useState(
-    modelCatalog.find(
-      (m) =>
-        m.model === guitar.model && m.manufacturer === guitar.manufacturer,
-    )?.id || "",
+  const saved = modelCatalog.find(
+    (m) => m.model === guitar.model && m.manufacturer === guitar.manufacturer,
   );
+  const knownMaker = catalogManufacturers().includes(guitar.manufacturer)
+    ? guitar.manufacturer
+    : "";
+  const [maker, setMaker] = useState(knownMaker);
+  const [family, setFamily] = useState(
+    saved?.family ||
+      (catalogFamilies(knownMaker).length === 1
+        ? catalogFamilies(knownMaker)[0]
+        : ""),
+  );
+  const [modelId, setModelId] = useState(saved?.id || "");
+  const other = maker === "other";
+  const families = other ? [] : catalogFamilies(maker);
+  const models = catalogModels(maker, family);
   const [year, setYear] = useState(
     /^\d{4}$/.test(guitar.year) ? guitar.year : "",
   );
@@ -46,7 +60,7 @@ export function ModelLookup({
         <span>Modellbibliotek</span>
       </div>
       <p>
-        Velg nøyaktig modell og produksjonsår for å hente
+        Velg produsent, serie, nøyaktig modell og produksjonsår for å hente
         standardspesifikasjoner. Modellnavnets «50s» og «60s» beskriver serien,
         ikke produksjonsåret.
       </p>
@@ -70,31 +84,72 @@ export function ModelLookup({
       >
         <div className="lookup-fields">
           <label>
-            Modell i biblioteket
+            Produsent
             <select
-              aria-label="Modell i biblioteket"
-              value={modelId}
+              aria-label="Produsent"
+              value={maker}
               onChange={(e) => {
-                setModelId(e.target.value);
+                const next = e.target.value;
+                const only = catalogFamilies(next);
+                setMaker(next);
+                setFamily(only.length === 1 ? only[0] : "");
+                setModelId(next === "other" ? "other" : "");
                 clear();
               }}
               required
             >
-              <option value="">Velg modell</option>
-              {[...new Set(modelCatalog.map((m) => m.manufacturer))].map(
-                (maker) => (
-                  <optgroup label={maker} key={maker}>
-                    {modelCatalog
-                      .filter((m) => m.manufacturer === maker)
-                      .map((m) => (
-                        <option value={m.id} key={m.id}>
-                          {m.manufacturer} {m.model}
-                        </option>
-                      ))}
-                  </optgroup>
-                ),
-              )}
-              <option value="other">Annen modell / ikke oppført</option>
+              <option value="">Velg produsent</option>
+              {catalogManufacturers().map((m) => (
+                <option value={m} key={m}>
+                  {m}
+                </option>
+              ))}
+              <option value="other">Annen / ikke oppført</option>
+            </select>
+          </label>
+          <label>
+            Serie
+            <select
+              aria-label="Serie"
+              value={family}
+              onChange={(e) => {
+                setFamily(e.target.value);
+                setModelId("");
+                clear();
+              }}
+              disabled={!families.length}
+              required={!other}
+            >
+              <option value="">
+                {maker && !other ? "Velg serie" : "Velg produsent først"}
+              </option>
+              {families.map((f) => (
+                <option value={f} key={f}>
+                  {f}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Modell
+            <select
+              aria-label="Modell"
+              value={other ? "" : modelId}
+              onChange={(e) => {
+                setModelId(e.target.value);
+                clear();
+              }}
+              disabled={!models.length}
+              required={!other}
+            >
+              <option value="">
+                {family ? "Velg modell" : "Velg serie først"}
+              </option>
+              {models.map((m) => (
+                <option value={m.id} key={m.id}>
+                  {m.model}
+                </option>
+              ))}
             </select>
           </label>
           <label>
@@ -120,9 +175,9 @@ export function ModelLookup({
         </div>
       </form>
       <p className="muted">
-        Biblioteket starter med to Gibson-modeller. Andre modeller kan legges
-        inn manuelt under instrumentdetaljer. Målt strenghøyde, relief og
-        pickuphøyde fylles ikke inn fra modellstandarder.
+        Modeller som ikke er oppført, kan legges inn manuelt under
+        instrumentdetaljer. Målt strenghøyde, relief og pickuphøyde fylles ikke
+        inn fra modellstandarder.
       </p>
       {result ? (
         <div className="lookup-result" role="status">

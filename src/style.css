@@ -2157,7 +2157,7 @@ body:has(.session-strip) footer {
 }
 .lookup-fields {
   display: grid;
-  grid-template-columns: 2fr 1fr auto;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
   align-items: end;
 }
@@ -2165,6 +2165,8 @@ body:has(.session-strip) footer {
   margin-bottom: 0;
 }
 .lookup-fields .primary {
+  grid-column: 1/-1;
+  justify-self: start;
   margin-bottom: 0;
   white-space: nowrap;
   gap: 10px;
@@ -2272,11 +2274,7 @@ body:has(.session-strip) footer {
 }
 @media (max-width: 1000px) {
   .lookup-fields {
-    grid-template-columns: 2fr 1fr;
-  }
-  .lookup-fields .primary {
-    grid-column: 1/-1;
-    justify-self: start;
+    grid-template-columns: 1fr 1fr;
   }
 }
 @media (max-width: 600px) {

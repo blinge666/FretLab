@@ -13,6 +13,10 @@ npm run dev -- --port 5173 --strictPort
 
 Valider med `npm test` og `npm run build`. Lokal lagring i nettleseren beholder modus, gitarprofil, verktøy, målinger, fremdrift og rapporter. Data synkroniseres ikke mellom enheter. Slett nettleserens nettsteddata for å nullstille.
 
+## Publisering
+
+`.github/workflows/pages.yml` tester, bygger og publiserer `dist` til GitHub Pages ved push til `main`. Krever at Pages-kilden i repoinnstillingene er satt til «GitHub Actions». Bygget bruker relativ base (`vite.config.mjs`), så det fungerer under `/FretLab/`.
+
 ## Arkitektur og avgrensning
 
 Avtalte produktkrav er beskrevet i `docs/FRETLAB_PROJECT_BRIEF.md`. Teknisk valg for første prototype: React + TypeScript + Vite, responsiv nettapp i stedet for en native app. `src/data.mjs` inneholder versjonert faginnhold, risikomodell og enkle diagnoseregler. React-komponentene håndterer navigasjon, innsamling og lokal lagring. Datamodellen omfatter gitarens modell/variant/år, konstruksjon, strenger, stemming, brukerobservasjoner og tidsstemplede rapporter. Modellen er foreløpig en prototype; produksjonsdata trenger egne kilde-, versjons- og sikkerhetsfelt per verdi.

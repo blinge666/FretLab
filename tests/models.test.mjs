@@ -93,6 +93,7 @@ test("picker steps narrow from manufacturer to family to model without losing en
     "Epiphone",
     "Fender",
     "Ibanez",
+    "G&L",
   ]);
   assert.deepEqual(catalogFamilies("Gibson"), ["Les Paul", "SG"]);
   assert.deepEqual(catalogFamilies("Fender"), ["Stratocaster", "Telecaster"]);
@@ -143,4 +144,29 @@ test("Ibanez families come from the record, not from letters in the model name",
   );
   for (const m of modelCatalog.filter((x) => x.manufacturer !== "Ibanez"))
     assert.notEqual(m.family, "S");
+});
+test("G&L ids are clean, families are explicit and Tribute records stay sparse", async () => {
+  const { catalogFamilies, catalogModels } = await import("../src/models.mjs");
+  assert.deepEqual(catalogFamilies("G&L"), [
+    "ASAT",
+    "Legacy",
+    "S-500",
+    "Comanche",
+    "Doheny",
+  ]);
+  assert.deepEqual(
+    catalogModels("G&L", "ASAT").map((m) => m.id),
+    [
+      "gl-fullerton-deluxe-asat-classic",
+      "gl-fullerton-deluxe-asat-special",
+      "gl-tribute-asat-classic",
+      "gl-tribute-asat-special",
+    ],
+  );
+  const usa = findModel("gl-fullerton-deluxe-legacy", 2022).model;
+  const tribute = findModel("gl-tribute-legacy", 2022).model;
+  assert.ok(usa.specs.neckProfile);
+  for (const key of ["neckProfile", "nut", "nutWidth", "radius", "body"])
+    assert.equal(Object.hasOwn(tribute.specs, key), false);
+  assert.equal(findModel("gl-tribute-legacy", 2026).kind, "not-found");
 });

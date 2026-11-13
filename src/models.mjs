@@ -1,5 +1,5 @@
 // Curated reference data. A model match never verifies an individual instrument.
-export const catalogVersion = "2026-11-13.4";
+export const catalogVersion = "2026-11-13.5";
 const unverifiedNote =
   "Produsentens nettside kunne ikke kontrolleres under registrering. Verdiene er antatte modellstandarder og ikke dokumenterte fabrikkdata for valgt årgang.";
 const gibsonSource = {
@@ -261,6 +261,100 @@ const ibanezModels = () => [
     { introduced: 2021 },
   ),
 ];
+const glSource = {
+  title: "G&L – elektriske gitarer",
+  url: "https://www.glguitars.com/",
+  verifiedAt: null,
+  note: unverifiedNote,
+};
+const glUsa = {
+  scale: "25,5 tommer (648 mm)",
+  radius: "9,5 tommer (241 mm)",
+  nut: "Bein",
+  nutWidth: "1,625 tommer (41,3 mm)",
+  fretCount: "22",
+  fretSize: "Medium jumbo",
+  body: "Or (alder) eller sumpask (avhengig av utførelse)",
+  neckProfile: "Modern Classic",
+};
+// Tribute necks, nuts and body woods vary too much between runs to suggest.
+const glTribute = { scale: "25,5 tommer (648 mm)", fretCount: "22" };
+const glShapes = [
+  {
+    family: "ASAT",
+    name: "ASAT Classic",
+    tribute: true,
+    specs: {
+      bridge: "Tradisjonell boksstol med 6 messingsaler",
+      ...tele("G&L MFD (single coil)"),
+    },
+  },
+  {
+    family: "ASAT",
+    name: "ASAT Special",
+    tribute: true,
+    specs: {
+      bridge: "Saddle-Lock fast stol",
+      ...tele("G&L MFD Jumbo (single coil)"),
+    },
+  },
+  {
+    family: "Legacy",
+    name: "Legacy",
+    tribute: true,
+    specs: {
+      bridge: "Dual-Fulcrum vibrato",
+      ...strat("Alnico V (single coil)"),
+    },
+  },
+  {
+    family: "S-500",
+    name: "S-500",
+    specs: {
+      bridge: "Dual-Fulcrum vibrato",
+      ...strat("G&L MFD (single coil)"),
+    },
+  },
+  {
+    family: "Comanche",
+    name: "Comanche",
+    specs: {
+      bridge: "Dual-Fulcrum vibrato",
+      ...strat("G&L MFD Z-coil (delt, støyreduserende)"),
+    },
+  },
+  {
+    family: "Doheny",
+    name: "Doheny",
+    specs: {
+      bridge: "Dual-Fulcrum vibrato",
+      ...tele("G&L MFD bred spole (single coil)"),
+    },
+  },
+];
+// Coverage ends in 2025; the status of G&L production after that is unclear.
+const glModels = () => [
+  ...glShapes.map((shape) =>
+    entry(
+      "G&L",
+      `Fullerton Deluxe ${shape.name}`,
+      glSource,
+      { ...glUsa, ...shape.specs },
+      { family: shape.family, introduced: 2018, lastCatalogYear: 2025 },
+    ),
+  ),
+  ...glShapes
+    .filter((shape) => shape.tribute)
+    .map((shape) =>
+      entry(
+        "G&L",
+        `Tribute ${shape.name}`,
+        glSource,
+        { ...glTribute, ...shape.specs },
+        { family: shape.family, lastCatalogYear: 2025 },
+      ),
+    ),
+];
 /** Fields left out of a record are unknown or too uncertain to suggest. */
 const families = ["Les Paul", "SG", "Stratocaster", "Telecaster"];
 const entry = (manufacturer, model, source, specs, range = {}) => ({
@@ -420,6 +514,7 @@ export const modelCatalog = [
   ...fenderModels("Stratocaster"),
   ...fenderModels("Telecaster"),
   ...ibanezModels(),
+  ...glModels(),
 ];
 /** Picker steps: manufacturer, then model family, then exact model. Catalogue order is kept. */
 export const catalogManufacturers = () => [

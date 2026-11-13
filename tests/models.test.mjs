@@ -58,3 +58,27 @@ test("unverified records never masquerade as verified factory sources or setup t
       assert.equal(Object.hasOwn(model.specs, key), false);
   }
 });
+test("catalogue ids are unique, stable and every spec key has a label", async () => {
+  const { specLabels } = await import("../src/models.mjs");
+  const ids = modelCatalog.map((m) => m.id);
+  assert.equal(new Set(ids).size, ids.length);
+  assert.ok(ids.includes(id));
+  assert.ok(ids.includes("epiphone-les-paul-standard-50s"));
+  for (const model of modelCatalog) {
+    assert.ok(model.introduced <= model.lastCatalogYear);
+    for (const [key, value] of Object.entries(model.specs)) {
+      assert.ok(Object.hasOwn(specLabels, key), `${model.id}: ${key}`);
+      assert.ok(value.trim());
+    }
+  }
+});
+test("same model name from different manufacturers stays distinct and year-limited", () => {
+  const gibson = findModel(id, 2021).model;
+  const epiphone = findModel("epiphone-les-paul-standard-50s", 2021).model;
+  assert.equal(gibson.model, epiphone.model);
+  assert.notEqual(gibson.manufacturer, epiphone.manufacturer);
+  assert.notEqual(gibson.specs.fingerboard, epiphone.specs.fingerboard);
+  assert.equal(findModel("epiphone-les-paul-standard-50s", 2019).kind, "not-found");
+  assert.equal(findModel("gibson-les-paul-studio", 2023).kind, "match");
+  assert.equal(findModel("gibson-les-paul-studio", 2024).kind, "not-found");
+});

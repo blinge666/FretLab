@@ -1,5 +1,5 @@
 // Curated reference data. A model match never verifies an individual instrument.
-export const catalogVersion = "2026-11-13.2";
+export const catalogVersion = "2026-11-13.3";
 const unverifiedNote =
   "Produsentens nettside kunne ikke kontrolleres under registrering. Verdiene er antatte modellstandarder og ikke dokumenterte fabrikkdata for valgt årgang.";
 const gibsonSource = {
@@ -40,10 +40,127 @@ const epiphoneStandard = {
   fingerboard: "Indisk laurbær",
   body: "Mahogni med lønnetopp",
 };
+const fenderSource = {
+  title: "Fender – elektriske gitarer",
+  url: "https://www.fender.com/",
+  verifiedAt: null,
+  note: unverifiedNote,
+};
+const sg = { ...gibsonUsa, body: "Mahogni" };
+const fender = {
+  scale: "25,5 tommer (648 mm)",
+  radius: "9,5 tommer (241 mm)",
+  fretCount: "22",
+  body: "Or (alder); enkelte utførelser avviker",
+};
+const narrowNut = "1,650 tommer (42 mm)";
+const wideNut = "1,685 tommer (42,8 mm)";
+const compound = "Sammensatt, 10–14 tommer (254–355,6 mm)";
+const strat = (pickup) => ({
+  neckPickup: pickup,
+  middlePickup: pickup,
+  bridgePickup: pickup,
+});
+const tele = (pickup) => ({ neckPickup: pickup, bridgePickup: pickup });
+// One record per series, used for both body shapes; only bridge and pickups differ.
+const fenderSeries = [
+  {
+    name: "Player",
+    range: { introduced: 2018, lastCatalogYear: 2024 },
+    specs: {
+      nut: "Syntetisk bein",
+      nutWidth: narrowNut,
+      fretSize: "Medium jumbo",
+      fingerboard: "Lønn eller pau ferro (avhengig av variant)",
+      neckProfile: "Modern C",
+    },
+    stratBridge: "2-punkts synkronisert tremolo",
+    teleBridge: "6 saler, strenger gjennom kroppen",
+    pickup: "Player Series Alnico 5 (single coil)",
+  },
+  {
+    name: "Player II",
+    range: { introduced: 2024 },
+    specs: {
+      nut: "Syntetisk bein",
+      nutWidth: wideNut,
+      fretSize: "Medium jumbo",
+      fingerboard: "Palisander eller lønn (avhengig av variant)",
+      neckProfile: "Modern C",
+    },
+    stratBridge: "2-punkts synkronisert tremolo",
+    teleBridge: "6 saler, strenger gjennom kroppen",
+    pickup: "Player Series Alnico 5 (single coil)",
+  },
+  {
+    name: "American Performer",
+    range: {},
+    specs: {
+      nut: "Syntetisk bein",
+      nutWidth: wideNut,
+      fretSize: "Jumbo",
+      fingerboard: "Palisander eller lønn (avhengig av variant)",
+      neckProfile: "Modern C",
+    },
+    stratBridge: "Synkronisert tremolo i vintage-stil (6 skruer)",
+    teleBridge: "3 messingsaler, strenger gjennom kroppen",
+    pickup: "Yosemite (single coil)",
+  },
+  {
+    name: "American Professional II",
+    range: { introduced: 2020 },
+    specs: {
+      nut: "Bein",
+      nutWidth: wideNut,
+      fretSize: "Narrow tall",
+      fingerboard: "Palisander eller lønn (avhengig av variant)",
+      neckProfile: "Deep C",
+    },
+    stratBridge: "2-punkts synkronisert tremolo",
+    teleBridge:
+      "3 kompenserte messingsaler, strenger gjennom kroppen eller toppmontert",
+    pickup: "V-Mod II (single coil)",
+  },
+  {
+    name: "American Ultra",
+    range: { lastCatalogYear: 2024 },
+    specs: {
+      radius: compound,
+      nut: "Bein",
+      nutWidth: wideNut,
+      fretSize: "Medium jumbo",
+      fingerboard: "Palisander eller lønn (avhengig av variant)",
+      neckProfile: "Modern D",
+    },
+    stratBridge: "2-punkts synkronisert tremolo",
+    teleBridge: "6 saler, strenger gjennom kroppen",
+    pickup: "Ultra Noiseless Vintage (støyfri single coil)",
+  },
+];
+const fenderModels = (shape) =>
+  fenderSeries.map((series) =>
+    entry(
+      "Fender",
+      `${series.name} ${shape}`,
+      fenderSource,
+      {
+        ...fender,
+        ...series.specs,
+        bridge:
+          shape === "Stratocaster" ? series.stratBridge : series.teleBridge,
+        ...(shape === "Stratocaster" ? strat : tele)(series.pickup),
+      },
+      series.range,
+    ),
+  );
 /** Fields left out of a record are unknown or too uncertain to suggest. */
+const families = ["Les Paul", "SG", "Stratocaster", "Telecaster"];
 const entry = (manufacturer, model, source, specs, range = {}) => ({
-  family: "Les Paul",
-  id: `${manufacturer} ${model}`.toLowerCase().replaceAll(" ", "-"),
+  family: families.find((f) => model.includes(f)),
+  id: `${manufacturer} ${model}`
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]/g, "")
+    .replaceAll(" ", "-"),
   manufacturer,
   model,
   introduced: 2019,
@@ -127,6 +244,34 @@ export const modelCatalog = [
     neckPickup: "P-90 Soapbar (single coil)",
     bridgePickup: "P-90 Soapbar (single coil)",
   }),
+  entry("Gibson", "SG Standard", gibsonSource, {
+    ...sg,
+    bridge: nashville,
+    neckProfile: "Rounded",
+    neckPickup: "490R (humbucker)",
+    bridgePickup: "490T (humbucker)",
+  }),
+  // Sold with stop bar, Maestro or Sideways vibrola; the bridge field is left out.
+  entry("Gibson", "SG Standard '61", gibsonSource, {
+    ...sg,
+    neckProfile: "SlimTaper",
+    neckPickup: "Burstbucker 61R (humbucker)",
+    bridgePickup: "Burstbucker 61T (humbucker)",
+  }),
+  entry("Gibson", "SG Special", gibsonSource, {
+    ...sg,
+    bridge: "Wraparound-stol",
+    neckProfile: "SlimTaper",
+    neckPickup: "P-90 Soapbar (single coil)",
+    bridgePickup: "P-90 Soapbar (single coil)",
+  }),
+  entry("Gibson", "SG Junior", gibsonSource, {
+    ...sg,
+    bridge: "Wraparound-stol",
+    neckProfile: "SlimTaper",
+    neckPickup: "Ingen",
+    bridgePickup: "P-90 Dog Ear (single coil)",
+  }),
   entry(
     "Epiphone",
     "Les Paul Standard 50s",
@@ -151,6 +296,21 @@ export const modelCatalog = [
     },
     { introduced: 2020 },
   ),
+  entry(
+    "Epiphone",
+    "SG Standard",
+    epiphoneSource,
+    {
+      ...epiphoneStandard,
+      body: "Mahogni",
+      neckProfile: "SlimTaper 60s C",
+      neckPickup: "Alnico Classic PRO (humbucker)",
+      bridgePickup: "Alnico Classic PRO (humbucker)",
+    },
+    { introduced: 2020 },
+  ),
+  ...fenderModels("Stratocaster"),
+  ...fenderModels("Telecaster"),
 ];
 /** Picker steps: manufacturer, then model family, then exact model. Catalogue order is kept. */
 export const catalogManufacturers = () => [
@@ -179,6 +339,7 @@ export const specLabels = {
   body: "Kropp",
   neckProfile: "Halsprofil",
   neckPickup: "Pickup – hals",
+  middlePickup: "Pickup – midt",
   bridgePickup: "Pickup – stol",
 };
 /** @returns {{kind:'match', model:ModelEntry, year:number, message:string} | {kind:'invalid-year'|'not-found',message:string}} */

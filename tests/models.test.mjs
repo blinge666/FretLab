@@ -88,10 +88,11 @@ test("same model name from different manufacturers stays distinct and year-limit
 test("picker steps narrow from manufacturer to family to model without losing entries", async () => {
   const { catalogManufacturers, catalogFamilies, catalogModels } =
     await import("../src/models.mjs");
-  assert.deepEqual(catalogManufacturers(), ["Gibson", "Epiphone"]);
-  assert.deepEqual(catalogFamilies("Gibson"), ["Les Paul"]);
+  assert.deepEqual(catalogManufacturers(), ["Gibson", "Epiphone", "Fender"]);
+  assert.deepEqual(catalogFamilies("Gibson"), ["Les Paul", "SG"]);
+  assert.deepEqual(catalogFamilies("Fender"), ["Stratocaster", "Telecaster"]);
   assert.deepEqual(catalogFamilies("Ukjent"), []);
-  assert.deepEqual(catalogModels("Gibson", "SG"), []);
+  assert.deepEqual(catalogModels("Fender", "SG"), []);
   const reached = catalogManufacturers().flatMap((maker) =>
     catalogFamilies(maker).flatMap((family) => catalogModels(maker, family)),
   );
@@ -101,4 +102,24 @@ test("picker steps narrow from manufacturer to family to model without losing en
   );
   for (const m of catalogModels("Epiphone", "Les Paul"))
     assert.equal(m.manufacturer, "Epiphone");
+});
+test("every entry belongs to a family and Fender shapes differ only where they should", () => {
+  for (const model of modelCatalog) {
+    assert.ok(model.family, model.id);
+    assert.match(model.id, /^[a-z0-9-]+$/);
+  }
+  const strat = findModel("fender-player-ii-stratocaster", 2025).model;
+  const tele = findModel("fender-player-ii-telecaster", 2025).model;
+  assert.equal(strat.family, "Stratocaster");
+  assert.equal(tele.family, "Telecaster");
+  assert.ok(strat.specs.middlePickup);
+  assert.equal(Object.hasOwn(tele.specs, "middlePickup"), false);
+  assert.notEqual(strat.specs.bridge, tele.specs.bridge);
+  assert.equal(strat.specs.scale, tele.specs.scale);
+  assert.equal(findModel("fender-player-stratocaster", 2025).kind, "not-found");
+  assert.equal(
+    findModel("fender-player-ii-stratocaster", 2023).kind,
+    "not-found",
+  );
+  assert.equal(findModel("gibson-sg-standard-61", 2021).kind, "match");
 });

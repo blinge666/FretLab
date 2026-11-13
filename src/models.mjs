@@ -1,5 +1,5 @@
 // Curated reference data. A model match never verifies an individual instrument.
-export const catalogVersion = "2026-11-13.1";
+export const catalogVersion = "2026-11-13.2";
 const unverifiedNote =
   "Produsentens nettside kunne ikke kontrolleres under registrering. Verdiene er antatte modellstandarder og ikke dokumenterte fabrikkdata for valgt årgang.";
 const gibsonSource = {
@@ -42,6 +42,7 @@ const epiphoneStandard = {
 };
 /** Fields left out of a record are unknown or too uncertain to suggest. */
 const entry = (manufacturer, model, source, specs, range = {}) => ({
+  family: "Les Paul",
   id: `${manufacturer} ${model}`.toLowerCase().replaceAll(" ", "-"),
   manufacturer,
   model,
@@ -52,7 +53,7 @@ const entry = (manufacturer, model, source, specs, range = {}) => ({
   specs,
   ...range,
 });
-/** @typedef {{id:string, manufacturer:string, model:string, introduced:number, lastCatalogYear:number, status:string, source: typeof gibsonSource, specs:Record<string,string>}} ModelEntry */
+/** @typedef {{id:string, manufacturer:string, family:string, model:string, introduced:number, lastCatalogYear:number, status:string, source: typeof gibsonSource, specs:Record<string,string>}} ModelEntry */
 /** @type {ModelEntry[]} */
 export const modelCatalog = [
   entry("Gibson", "Les Paul Standard 50s", gibsonSource, {
@@ -151,6 +152,21 @@ export const modelCatalog = [
     { introduced: 2020 },
   ),
 ];
+/** Picker steps: manufacturer, then model family, then exact model. Catalogue order is kept. */
+export const catalogManufacturers = () => [
+  ...new Set(modelCatalog.map((m) => m.manufacturer)),
+];
+export const catalogFamilies = (manufacturer) => [
+  ...new Set(
+    modelCatalog
+      .filter((m) => m.manufacturer === manufacturer)
+      .map((m) => m.family),
+  ),
+];
+export const catalogModels = (manufacturer, family) =>
+  modelCatalog.filter(
+    (m) => m.manufacturer === manufacturer && m.family === family,
+  );
 export const specLabels = {
   scale: "Mensur",
   radius: "Gripebrettradius",

@@ -38,7 +38,7 @@ Grensesnittet bruker et mørkt verksteduttrykk med oransje handlingsknapper, sel
 
 ## Modelloppslag
 
-Under Mine gitarer kan brukeren velge modell og produksjonsår, forhåndsvise standardspesifikasjoner og velge hvilke felt som skal brukes. Eksisterende egne felt er ikke valgt automatisk. Modell og år oppdateres først når brukeren anvender valget. Endringer i modell eller år etter et oppslag gjør referansen utdatert og vises tydelig. Lokale data fra tidligere versjoner beholdes.
+Under Mine gitarer kan brukeren velge produsent, serie (for eksempel Les Paul), modell og produksjonsår, forhåndsvise standardspesifikasjoner og velge hvilke felt som skal brukes. Eksisterende egne felt er ikke valgt automatisk. Modell og år oppdateres først når brukeren anvender valget. Endringer i modell eller år etter et oppslag gjør referansen utdatert og vises tydelig. Lokale data fra tidligere versjoner beholdes.
 
 `src/models.mjs` er et versjonert, lokalt bibliotek, ikke et live nettsøk. Dekning: ti Les Paul-modeller. Gibson Standard 50s, Standard 60s, Classic, Modern, Custom, Junior og Special (modellår 2019–2026), Gibson Studio (2019–2023, før omleggingen i 2024) og Epiphone Les Paul Standard 50s og 60s (2020–2026). Felt som er usikre for en modell, er utelatt i stedet for gjettet. Disse modellnavnene viser til serien, ikke produksjon på 1950-/1960-tallet. Opplysningene er antatte modellstandarder med produsentlenke. Produsentnettsiden var utilgjengelig for kildekontroll, og ingen verdier er merket som dokumentert årgangsspesifikasjon. Ikke bruk dem som verifisert fabrikkoppsett. Ingen automatisk utfylling av relief, strenghøyde eller pickuphøyde. Ukjente modeller/år gir ingen automatisk utfylling; manuell profil støttes.
 

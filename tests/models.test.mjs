@@ -78,7 +78,27 @@ test("same model name from different manufacturers stays distinct and year-limit
   assert.equal(gibson.model, epiphone.model);
   assert.notEqual(gibson.manufacturer, epiphone.manufacturer);
   assert.notEqual(gibson.specs.fingerboard, epiphone.specs.fingerboard);
-  assert.equal(findModel("epiphone-les-paul-standard-50s", 2019).kind, "not-found");
+  assert.equal(
+    findModel("epiphone-les-paul-standard-50s", 2019).kind,
+    "not-found",
+  );
   assert.equal(findModel("gibson-les-paul-studio", 2023).kind, "match");
   assert.equal(findModel("gibson-les-paul-studio", 2024).kind, "not-found");
+});
+test("picker steps narrow from manufacturer to family to model without losing entries", async () => {
+  const { catalogManufacturers, catalogFamilies, catalogModels } =
+    await import("../src/models.mjs");
+  assert.deepEqual(catalogManufacturers(), ["Gibson", "Epiphone"]);
+  assert.deepEqual(catalogFamilies("Gibson"), ["Les Paul"]);
+  assert.deepEqual(catalogFamilies("Ukjent"), []);
+  assert.deepEqual(catalogModels("Gibson", "SG"), []);
+  const reached = catalogManufacturers().flatMap((maker) =>
+    catalogFamilies(maker).flatMap((family) => catalogModels(maker, family)),
+  );
+  assert.deepEqual(
+    reached.map((m) => m.id).sort(),
+    modelCatalog.map((m) => m.id).sort(),
+  );
+  for (const m of catalogModels("Epiphone", "Les Paul"))
+    assert.equal(m.manufacturer, "Epiphone");
 });

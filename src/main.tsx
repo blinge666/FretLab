@@ -839,7 +839,7 @@ function Guitar() {
   return (
     <img
       className="guitar"
-      src="/images/goldtop-guitar.webp"
+      src="images/goldtop-guitar.webp"
       alt="Gullfarget elektrisk gitar med kremfarget slagbrett og to humbuckere"
       width={1600}
       height={562}
